@@ -1,11 +1,8 @@
 package org.acme.entities;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import jakarta.persistence.*;
 
-import java.util.Collection;
 import java.util.Set;
 
 @Entity
@@ -16,36 +13,6 @@ public class Plot {
 
     private Double width;
     private Double height;
-
-    @OneToMany(mappedBy = "plot")
-    private Set<Fruit> fruit;
-
-    public void addFruit(Fruit fruit) {
-        fruit.setPlot(this);
-    }
-
-    public void removeFruit(Fruit fruit) {
-        fruit.setPlot(null);
-    }
-
-    public Collection<Fruit> getFruit() {
-        return fruit;
-    }
-
-    public void setFruit(Set<Fruit> fruit) {
-        this.fruit = fruit;
-    }
-
-    @OneToMany(mappedBy = "plot")
-    private Collection<Vegetable> vegetables;
-
-    public Collection<Vegetable> getVegetables() {
-        return vegetables;
-    }
-
-    public void setVegetables(Collection<Vegetable> vegetables) {
-        this.vegetables = vegetables;
-    }
 
     public Long getId() {
         return id;
@@ -69,5 +36,52 @@ public class Plot {
 
     public void setHeight(Double height) {
         this.height = height;
+    }
+
+    // Owning-side... Holds garden_id.
+    @JsonIgnore // IMPORTANT. Should not be loaded for REST... LazyInitializationException!
+    @ManyToOne
+    @JoinColumn(name = "garden_id")
+    private Garden garden;
+
+    public Garden getGarden() {
+        return garden;
+    }
+
+    // Owning-side... set other side as well.
+    public void setGarden(Garden garden) {
+        if (this.garden != null) {
+            this.garden.getPlots().remove(this);
+        }
+        this.garden = garden;
+        if (garden != null) {
+            garden.getPlots().add(this);
+        }
+    }
+
+    // Owning-side... Holds JoinTable settings.
+    @JsonIgnore // IMPORTANT. Should not be loaded for REST... LazyInitializationException!
+    @ManyToMany
+    @JoinTable(joinColumns = @JoinColumn(name = "plot_id"), inverseJoinColumns = @JoinColumn(name = "vegetable_id"))
+    private Set<Vegetable> vegetables;
+
+    public Set<Vegetable> getVegetables() {
+        return vegetables;
+    }
+
+    public void setVegetables(Set<Vegetable> vegetables) {
+        this.vegetables = vegetables;
+    }
+
+    // Owning-side... set other side as well.
+    public void addVegetable(Vegetable vegetable) {
+        vegetable.getPlots().add(this);
+        vegetables.add(vegetable);
+    }
+
+    // Owning-side... set other side as well.
+    public void removeVegetable(Vegetable vegetable) {
+        vegetable.getPlots().remove(this);
+        vegetables.remove(vegetable);
     }
 }

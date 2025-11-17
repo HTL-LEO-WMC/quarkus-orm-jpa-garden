@@ -4,3 +4,11 @@
 -- insert into myentity (id, field) values(2, 'field-2');
 -- insert into myentity (id, field) values(3, 'field-3');
 -- alter sequence myentity_seq restart with 4;
+
+insert into garden (id, address) values(1, 'Flurstraße 17, 4470 Enns');
+
+insert into plot (id, width, height, garden_id) values(1, 12, 3, 1);
+
+insert into vegetable (id, name, nutritionalvalue) values(1, 'Carrot', 23);
+
+insert into plot_vegetable (plot_id, vegetable_id) values(1, 1);

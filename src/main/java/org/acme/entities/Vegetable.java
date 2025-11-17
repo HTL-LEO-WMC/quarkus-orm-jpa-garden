@@ -1,6 +1,13 @@
 package org.acme.entities;
 
-import jakarta.persistence.*;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.Id;
+import jakarta.persistence.ManyToMany;
+
+import java.util.Collection;
+import java.util.Set;
 
 @Entity
 public class Vegetable {
@@ -10,26 +17,6 @@ public class Vegetable {
 
     private String name;
     private Integer nutritionalValue;
-
-    // Owning-side ... holds plot-id.
-    @ManyToOne
-    @JoinColumn(name = "plotId")
-    private Plot plot;
-
-    public Plot getPlot() {
-        return plot;
-    }
-
-    // Owning-side... remove from plot as well.
-    public void setPlot(Plot plot) {
-        if(this.plot != null) {
-            this.plot.getVegetables().remove(this);
-        }
-        this.plot = plot;
-        if(plot != null) {
-            plot.getVegetables().add(this);
-        }
-    }
 
     public Long getId() {
         return id;
@@ -53,5 +40,27 @@ public class Vegetable {
 
     public void setNutritionalValue(Integer nutritionalValue) {
         this.nutritionalValue = nutritionalValue;
+    }
+
+    @JsonIgnore // IMPORTANT. Should not be loaded for REST... LazyInitializationException!
+    @ManyToMany(mappedBy = "vegetables")
+    private Set<Plot> plots;
+
+    public Set<Plot> getPlots() {
+        return plots;
+    }
+
+    public void setPlots(Set<Plot> plots) {
+        this.plots = plots;
+    }
+
+    // Convenience-method 1.
+    public void addPlot(Plot plot) {
+        plot.addVegetable(this);
+    }
+
+    // Convenience-method 2.
+    public void removePlot(Plot plot) {
+        plot.removeVegetable(this);
     }
 }
