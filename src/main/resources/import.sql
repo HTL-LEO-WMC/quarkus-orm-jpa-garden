@@ -12,3 +12,7 @@ insert into plot (id, width, height, garden_id) values(1, 12, 3, 1);
 insert into vegetable (id, name, nutritionalvalue) values(1, 'Carrot', 23);
 
 insert into plot_vegetable (plot_id, vegetable_id) values(1, 1);
+
+alter sequence garden_seq restart with 10;
+alter sequence plot_seq restart with 10;
+alter sequence vegatable_seq restart with 10;
