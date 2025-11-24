@@ -31,6 +31,6 @@ public class PlotRepository {
 
     @Transactional
     public void deleteById(Long id) {
-        em.createQuery("delete from Plot where id=:id", Plot.class).setParameter("id", id).getSingleResult();
+        em.createQuery("delete from Plot where id=:id", Plot.class).setParameter("id", id).executeUpdate();
     }
 }

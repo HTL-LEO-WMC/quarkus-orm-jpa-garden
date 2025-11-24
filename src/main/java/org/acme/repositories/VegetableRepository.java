@@ -33,7 +33,7 @@ public class VegetableRepository {
 
     @Transactional
     public void deleteById(Long id) {
-        em.createQuery("delete from Vegetable where id=:id", Vegetable.class).setParameter("id", id).getSingleResult();
+        em.createQuery("delete from Vegetable where id=:id", Vegetable.class).setParameter("id", id).executeUpdate();
     }
 
     // Example for an arbitrary helper method.

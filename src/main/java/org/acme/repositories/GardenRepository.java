@@ -30,6 +30,6 @@ public class GardenRepository {
 
     @Transactional
     public void deleteById(Long id) {
-        em.createQuery("delete from Garden where id=:id", Garden.class).setParameter("id", id).getSingleResult();
+        em.createQuery("delete from Garden where id=:id", Garden.class).setParameter("id", id).executeUpdate();
     }
 }
