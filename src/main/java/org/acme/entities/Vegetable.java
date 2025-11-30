@@ -1,20 +1,14 @@
 package org.acme.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import io.quarkus.hibernate.reactive.panache.PanacheEntity;
 import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
 import jakarta.persistence.ManyToMany;
 
-import java.util.Collection;
 import java.util.Set;
 
 @Entity
-public class Vegetable {
-    @Id
-    @GeneratedValue
-    private Long id;
-
+public class Vegetable  extends PanacheEntity {
     private String name;
     private Integer nutritionalValue;
 
