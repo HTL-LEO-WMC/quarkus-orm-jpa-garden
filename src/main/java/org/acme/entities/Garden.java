@@ -4,40 +4,20 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.quarkus.hibernate.orm.panache.PanacheEntity;
 import jakarta.persistence.Entity;
 import jakarta.persistence.OneToMany;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.util.Collection;
 
 @Entity
+@Getter
+@Setter
 public class Garden extends PanacheEntity {
     private String address;
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getAddress() {
-        return address;
-    }
-
-    public void setAddress(String address) {
-        this.address = address;
-    }
-
+    
     @JsonIgnore // IMPORTANT. Should not be loaded for REST... LazyInitializationException!
     @OneToMany(mappedBy = "garden")
     private Collection<Plot> plots;
-
-    public Collection<Plot> getPlots() {
-        return plots;
-    }
-
-    public void setPlots(Collection<Plot> plots) {
-        this.plots = plots;
-    }
 
     // Convenience-method 1.
     public void addPlot(Plot plot) {
