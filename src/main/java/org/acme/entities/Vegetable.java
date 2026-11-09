@@ -1,66 +1,30 @@
 package org.acme.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import io.quarkus.hibernate.orm.panache.PanacheEntity;
 import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
 import jakarta.persistence.ManyToMany;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.util.HashSet;
 import java.util.Set;
 
 @Entity
-public class Vegetable {
-    @Id
-    @GeneratedValue
-    private Long id;
-
+@Getter
+@Setter
+public class Vegetable extends PanacheEntity {
     private String name;
     private Integer nutritionalValue;
 
-    // Inverse side... the join table is configured in Plot.
-    @JsonIgnore // IMPORTANT. Should not be loaded for REST... LazyInitializationException!
+    @JsonIgnore
     @ManyToMany(mappedBy = "vegetables")
     private Set<Plot> plots = new HashSet<>();
 
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public Integer getNutritionalValue() {
-        return nutritionalValue;
-    }
-
-    public void setNutritionalValue(Integer nutritionalValue) {
-        this.nutritionalValue = nutritionalValue;
-    }
-
-    public Set<Plot> getPlots() {
-        return plots;
-    }
-
-    public void setPlots(Set<Plot> plots) {
-        this.plots = plots;
-    }
-
-    // Convenience-method 1.
     public void addPlot(Plot plot) {
         plot.addVegetable(this);
     }
 
-    // Convenience-method 2.
     public void removePlot(Plot plot) {
         plot.removeVegetable(this);
     }

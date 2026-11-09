@@ -1,57 +1,34 @@
 package org.acme.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import io.quarkus.hibernate.orm.panache.PanacheEntity;
 import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
+import jakarta.persistence.NamedQuery;
 import jakarta.persistence.OneToMany;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.util.ArrayList;
 import java.util.Collection;
 
 @Entity
-public class Garden {
-    @Id
-    @GeneratedValue
-    private Long id;
-
+@Getter
+@Setter
+@NamedQuery(
+        name = "Garden.sortedByAddress",
+        query = "FROM Garden g ORDER BY g.address ASC"
+)
+public class Garden extends PanacheEntity {
     private String address;
 
-    // Inverse side... the foreign key garden_id lives in the plot table.
-    @JsonIgnore // IMPORTANT. Should not be loaded for REST... LazyInitializationException!
+    @JsonIgnore
     @OneToMany(mappedBy = "garden")
     private Collection<Plot> plots = new ArrayList<>();
 
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getAddress() {
-        return address;
-    }
-
-    public void setAddress(String address) {
-        this.address = address;
-    }
-
-    public Collection<Plot> getPlots() {
-        return plots;
-    }
-
-    public void setPlots(Collection<Plot> plots) {
-        this.plots = plots;
-    }
-
-    // Convenience-method 1.
     public void addPlot(Plot plot) {
         plot.setGarden(this);
     }
 
-    // Convenience-method 2.
     public void removePlot(Plot plot) {
         plot.setGarden(null);
     }

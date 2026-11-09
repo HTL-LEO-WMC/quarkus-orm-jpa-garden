@@ -1,67 +1,31 @@
 package org.acme.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.JoinTable;
-import jakarta.persistence.ManyToMany;
-import jakarta.persistence.ManyToOne;
+import io.quarkus.hibernate.orm.panache.PanacheEntity;
+import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.util.HashSet;
 import java.util.Set;
 
 @Entity
-public class Plot {
-    @Id
-    @GeneratedValue
-    private Long id;
-
+@Getter
+@Setter
+public class Plot extends PanacheEntity {
     private Double width;
     private Double height;
 
-    // Owning-side... Holds garden_id.
-    @JsonIgnore // IMPORTANT. Should not be loaded for REST... LazyInitializationException!
+    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "garden_id")
     private Garden garden;
 
-    // Owning-side... Holds JoinTable settings.
-    @JsonIgnore // IMPORTANT. Should not be loaded for REST... LazyInitializationException!
+    @JsonIgnore
     @ManyToMany
     @JoinTable(joinColumns = @JoinColumn(name = "plot_id"), inverseJoinColumns = @JoinColumn(name = "vegetable_id"))
     private Set<Vegetable> vegetables = new HashSet<>();
 
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public Double getWidth() {
-        return width;
-    }
-
-    public void setWidth(Double width) {
-        this.width = width;
-    }
-
-    public Double getHeight() {
-        return height;
-    }
-
-    public void setHeight(Double height) {
-        this.height = height;
-    }
-
-    public Garden getGarden() {
-        return garden;
-    }
-
-    // Owning-side... set other side as well.
     public void setGarden(Garden garden) {
         if (this.garden != null) {
             this.garden.getPlots().remove(this);
@@ -72,21 +36,11 @@ public class Plot {
         }
     }
 
-    public Set<Vegetable> getVegetables() {
-        return vegetables;
-    }
-
-    public void setVegetables(Set<Vegetable> vegetables) {
-        this.vegetables = vegetables;
-    }
-
-    // Owning-side... set other side as well.
     public void addVegetable(Vegetable vegetable) {
         vegetable.getPlots().add(this);
         vegetables.add(vegetable);
     }
 
-    // Owning-side... set other side as well.
     public void removeVegetable(Vegetable vegetable) {
         vegetable.getPlots().remove(this);
         vegetables.remove(vegetable);

@@ -1,0 +1,30 @@
+### Plots API
+
+### List all plots
+GET http://localhost:8080/plots
+Accept: application/json
+
+### Get plot by ID
+GET http://localhost:8080/plots/1
+Accept: application/json
+
+### Create plot
+POST http://localhost:8080/plots
+Content-Type: application/json
+
+{
+  "width": 10,
+  "height": 5
+}
+
+### Update plot (careful: removes garden and vegetables, see next slide)
+PUT http://localhost:8080/plots/2
+Content-Type: application/json
+
+{
+  "width": 12,
+  "height": 7
+}
+
+### Delete plot
+DELETE http://localhost:8080/plots/1
